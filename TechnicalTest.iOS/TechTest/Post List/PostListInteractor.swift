@@ -14,10 +14,13 @@ final class PostListInteractor {
             case .success(let posts):
                 DispatchQueue.main.async {
                     view?.display(posts)
+                    
                 }
-            case .failure:
+            case .failure(let error):
                 // TODO: - Handle the error
-                break
+                DispatchQueue.main.async {
+                    view?.errorLoading(error: error)
+                }
             }
         }
     }

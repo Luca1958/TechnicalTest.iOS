@@ -17,8 +17,10 @@ final class PostCommentsInteractor {
                 case .success(let comments):
                     view?.display(comments)
                     
-                case .failure:
-                    break
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        view?.errorLoading(_error: error)
+                    }
                 }
             }
         }

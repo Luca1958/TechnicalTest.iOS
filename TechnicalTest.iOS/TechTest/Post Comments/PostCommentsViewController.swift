@@ -10,6 +10,8 @@ import UIKit
 
 protocol CommentListViewing: AnyObject {
     func display(_ Comments: [Comments])
+    
+    func errorLoading(_error: Error)
 }
 
 final class PostCommentsViewController: UITableViewController, CommentListViewing {
@@ -36,18 +38,31 @@ final class PostCommentsViewController: UITableViewController, CommentListViewin
         tableView.reloadData()
     }
     
+    func errorLoading(_error: Error){
+        let alert = UIAlertController(title: "Unable to load data", message: "Error loading post please try again", preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "Reload", style: .default, handler: { UIAlertAction in
+            self.interactor.fetchAllComments(postID: self.postID)
+        }))
+
+        self.present(alert, animated: true)
+    }
+    
     // MARK: - Table View Methods
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         displayedComments.count
     }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+               return 300
+       }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Self.cellIdentifier, for: indexPath) as! PostCommetsCell
         let comment = displayedComments[indexPath.row]
 
         cell.configure(with: comment)
-        cell.accessoryType = .disclosureIndicator
 
         return cell
     }

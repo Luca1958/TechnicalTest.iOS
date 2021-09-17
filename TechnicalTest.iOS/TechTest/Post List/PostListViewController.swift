@@ -7,6 +7,8 @@ import UIKit
 
 protocol PostListViewing: AnyObject {
     func display(_ posts: [Post])
+    
+    func errorLoading(error: Error)
 }
 
 final class PostListViewController: UITableViewController, PostListViewing {
@@ -39,6 +41,16 @@ final class PostListViewController: UITableViewController, PostListViewing {
     func display(_ posts: [Post]) {
         displayedPosts = posts
         tableView.reloadData()
+    }
+    
+    func errorLoading(error: Error){
+        let alert = UIAlertController(title: "Unable to load data", message: "Error loading post please try again", preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "Reload", style: .default, handler: { UIAlertAction in
+            self.interactor.fetchAllPosts()
+        }))
+
+        self.present(alert, animated: true)
     }
 
     // MARK: - Table View Methods
